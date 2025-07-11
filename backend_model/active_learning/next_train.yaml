@@ -1,0 +1,5 @@
+
+train: D:/PCB/PCB-3/PCB-D3/backend_model/datasets/next_train/train/images
+val: D:/PCB/PCB-3/PCB-D3/backend_model/datasets/next_train/val/images
+nc: 6
+names: ['Missing_hole', 'Mouse_bite', 'Open_circuit', 'Short', 'Spur', 'Spurious_copper']

@@ -1,0 +1,10 @@
+ # dataset path
+train: ./datasets/BJ-PCB/train/images
+val: ./datasets/BJ-PCB/val/images
+test: ./datasets/BJ-PCB/val/images
+
+# number of classes
+nc: 6
+
+# class names
+names: ['Missing_hole','Mouse_bite','Open_circuit','Short','Spur','Spurious_copper']

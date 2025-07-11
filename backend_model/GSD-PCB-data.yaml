@@ -1,0 +1,10 @@
+ # dataset path
+train: ./datasets/GSD-PCB/train/images
+val: ./datasets/GSD-PCB/val/images
+test: ./datasets/GSD-PCB/val/images
+
+# number of classes
+nc: 7
+
+# class names
+names: ['false_solder','missing_parts','shift','flip','lack_solder','foreign','label_problem']
