@@ -5,8 +5,6 @@ scikit-learn==1.7.0
 scipy==1.15.3
 opencv-python==4.11.0.86
 pillow==11.2.1
-torch==2.0.0+cu118
-torchvision==0.15.1+cu118
 ultralytics==8.3.160
 matplotlib==3.10.3
 fastapi==0.115.14
