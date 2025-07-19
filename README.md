@@ -38,32 +38,54 @@ pip install requirements.txt
 本项目数据集组织结构如下所示，适用于 BJ-PCB 缺陷检测任务：
 
 ```plaintext
-./datasets/
-├── BJ-PCB/                   # 数据集已划分好的训练/验证/测试目录（用于训练/推理）
-│   ├── images/               # 存放图像文件
-│   └── labels/               # 存放YOLO格式标注文件
-│
-├── normal/                   # 正常样本数据集（如有，用于扩充数据或对比分析）
-│
-└── raw/                       # 原始数据文件（标注文件和原始图像）
-    └── BJ-PCB/
-        ├── Annotations/       # 原始标注文件（按类别存放）
-        │   ├── Missing_hole/
-        │   ├── Mouse_bite/
-        │   ├── Open_circuit/
-        │   ├── Short/
-        │   ├── Spur/
-        │   └── Spurious_copper/
-        │
-        ├── images/            # 原始图像文件
-        └── labels/            # 转换为YOLO格式的标注文件（由脚本生成）
+./
+├── backend_detect/                  # 后端：检测服务模块（如主动学习、预测服务）
+│   ├── active_learning/            # 主动学习核心逻辑
+│   ├── datasets/simulate_ready_push/  # 模拟数据集存放路径
+│   ├── runs/active_learning/       # 主动学习过程中的运行日志和模型保存
+│   ├── server.py                   # 检测服务入口
+│   └── pre.py                      # 数据预处理脚本
+
+├── backend_model/                  # 后端：模型训练模块（基于YOLO/Ultralytics）
+│   ├── active_learning/            # 与detect共用的主动学习模块
+│   ├── docker/                     # Docker部署相关
+│   ├── docs/                       # 项目文档目录
+│   ├── examples/                   # 示例脚本与配置
+│   ├── runs/active_learning/       # 训练/推理输出结果
+│   ├── tests/                      # 单元测试模块
+│   ├── ultralytics/                # YOLO模型源码及定制模块
+│   ├── *.yaml                      # 数据集配置文件（BJ-PCB、GSD-PCB等）
+│   ├── detect.py                   # 推理脚本
+│   ├── train.py / val.py / test.py # 训练、验证、测试脚本
+│   ├── server.py                   # 训练服务入口
+│   └── image_labeler.py           # 图像标注逻辑（推测用于交互式标注）
+
+├── frontend/                       # 前端：基于 Vue + TypeScript 的可视化界面
+│   ├── public/                     # 静态资源目录
+│   ├── src/                        # 前端源代码
+│   │   ├── assets/                # 图像资源等
+│   │   ├── components/           # 核心组件区块（如标注区域、结果展示）
+│   │   │   ├── ControlPanel.vue
+│   │   │   ├── DetectionArea.vue
+│   │   │   ├── LabelArea.vue
+│   │   │   ├── ResultTable.vue
+│   │   │   └── TransfImg.vue
+│   │   ├── stores/               # 状态管理模块（Pinia）
+│   │   │   ├── manageImg.ts
+│   │   │   └── manageModel.ts
+│   │   └── main.ts / App.vue     # 项目入口
+│   ├── package.json               # 前端依赖管理
+│   └── vite.config.ts             # 构建配置文件（Vite）
+
+├── requirements.txt               # Python依赖列表（后端环境）
+├── README.md                      # 项目说明文档
 ```
 
 ### 说明
 
-* `BJ-PCB/images/` 和 `BJ-PCB/labels/` 用于训练、验证、测试。
-* `raw/BJ-PCB/Annotations/` 为每类缺陷的原始标注文件（如 XML）。
-* `raw/BJ-PCB/labels/` 是转换后的 YOLO 格式标注文件，用于训练。
+* `Dataset_Name/images/` 和 `Dataset_Name/labels/` 用于训练、验证、测试。
+* `raw/Dataset_Name/Annotations/` 为每类缺陷的原始标注文件（如 XML）。
+* `raw/Dataset_Name/labels/` 是转换后的 YOLO 格式标注文件，用于训练。
 * 建议在数据预处理阶段，将原始数据组织成 YOLO 所需的 `images/` 和 `labels/` 结构。
 
 ### 示例标注文件
