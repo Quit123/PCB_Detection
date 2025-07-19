@@ -1,39 +1,6 @@
-# PCB Detection
+# PCB Detection(Model Backend)
 
-## 环境安装要求
-
-本项目基于 Python 3.10，推荐使用 Conda 创建隔离虚拟环境。
-
-### 1️⃣ 创建并激活 Conda 虚拟环境
-
-```bash
-conda create -n yolov11 python=3.10
-conda activate yolov11
-```
-
-### 2️⃣ 安装 JupyterLab（可选，用于交互式开发）
-
-```bash
-conda install jupyterlab
-```
-
-### 3️⃣ 安装 PyTorch + CUDA 11.8
-
-请根据你的显卡驱动选择合适的 CUDA 版本，以下为 CUDA 11.8 示例：
-
-```bash
-pip install torch==2.0.0+cu118 torchvision==0.15.1+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
-```
-
-### 4️⃣ 安装项目依赖
-
-```bash
-pip install numpy<2 opencv-python matplotlib pillow tqdm ultralytics scikit-learn
-```
-
----
-
-## 数据集目录结构
+## 目录结构
 
 本项目数据集组织结构如下所示，适用于 BJ-PCB 缺陷检测任务：
 
@@ -79,29 +46,6 @@ datasets/
 │    └── val/                          # 下一轮验证集
 
 ```
-
-### 说明
-
-* `BJ-PCB/images/` 和 `BJ-PCB/labels/` 用于训练、验证、测试。
-* `raw/BJ-PCB/Annotations/` 为每类缺陷的原始标注文件（如 XML）。
-* `raw/BJ-PCB/labels/` 是转换后的 YOLO 格式标注文件，用于训练。
-* 建议在数据预处理阶段，将原始数据组织成 YOLO 所需的 `images/` 和 `labels/` 结构。
-
-### 示例标注文件
-
-YOLO 格式标签（`.txt` 文件）：
-
-```
-<class_id> <x_center> <y_center> <width> <height>
-```
-
-数值均归一化到 0\~1。
-
----
-
-如需数据集划分和格式转换脚本，可参考本项目提供的 `pre.py` 或自行编写批处理脚本。
-
-
 
 ## 注意事项
 
