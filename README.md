@@ -28,7 +28,7 @@ pip install torch==2.0.0+cu118 torchvision==0.15.1+cu118 --extra-index-url https
 ### 4️⃣ 安装项目依赖
 
 ```bash
-pip install numpy<2 opencv-python matplotlib pillow tqdm ultralytics scikit-learn
+pip install requirements.txt
 ```
 
 ---
