@@ -30,6 +30,7 @@ pip install torch==2.0.0+cu118 torchvision==0.15.1+cu118 --extra-index-url https
 ```bash
 pip install requirements.txt
 ```
+若缺包请按照报错说明pip install <package_name>
 
 ---
 
