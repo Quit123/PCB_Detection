@@ -1,172 +1,176 @@
 # PCB Detection
 
 > A hybrid active-learning based defect detection pipeline for industrial PCB AOI systems.  
-> 🥇 Winner of Shaoyin Cup 2025 Gold Award.
+> 🥇 Winner of the **Shokz Global Excellence and Innovative Talent Summer School 2025 Gold Award**.
 
 [📽️ Demo Video (MP4)](docs/demonstration.mp4)
 
-## 环境安装要求
+## Environment Setup
 
-本项目基于 Python 3.10，推荐使用 Conda 创建隔离虚拟环境。
+This project is developed with **Python 3.10**. It is recommended to use **Conda** to create an isolated virtual environment.
 
-### 1️⃣ 创建并激活 Conda 虚拟环境
+### 1️⃣ Create and Activate a Conda Environment
 
 ```bash
 conda create -n yolov11 python=3.10
 conda activate yolov11
 ```
 
-### 2️⃣ 安装 JupyterLab（可选，用于交互式开发）
+### 2️⃣ Install JupyterLab (Optional, for Interactive Development)
 
 ```bash
 conda install jupyterlab
 ```
 
-### 3️⃣ 安装 PyTorch + CUDA 11.8
+### 3️⃣ Install PyTorch + CUDA 11.8
 
-请根据你的显卡驱动选择合适的 CUDA 版本，以下为 CUDA 11.8 示例：
+Please choose the appropriate CUDA version according to your GPU driver.
+Example for **CUDA 11.8**:
 
 ```bash
 pip install torch==2.0.0+cu118 torchvision==0.15.1+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
 ```
 
-### 4️⃣ 安装项目依赖
+### 4️⃣ Install Project Dependencies
 
 ```bash
 pip install requirements.txt
 ```
-若缺包请按照报错说明pip install <package_name>
+If any packages are missing, install them manually according to the error message: pip install <package_name>
 
 ---
 
-## 数据集目录结构
+## Dataset Directory Structure
 
-本项目数据集组织结构如下所示，适用于 BJ-PCB 缺陷检测任务：
+The dataset is organized as follows, tailored for the **PCB defect detection** task:
 
 ```plaintext
 ./
-├── backend_detect/                  # 后端：检测服务模块（如主动学习、预测服务）
-│   ├── active_learning/            # 主动学习核心逻辑
-│   ├── datasets/simulate_ready_push/  # 模拟数据集存放路径
-│   ├── runs/active_learning/       # 主动学习过程中的运行日志和模型保存
-│   ├── server.py                   # 检测服务入口
-│   └── pre.py                      # 数据预处理脚本
+├── backend_detect/                    # Backend: Detection service module (e.g., active learning, inference service)
+│   ├── active_learning/               # Core logic for active learning
+│   ├── datasets/simulate_ready_push/  # Directory for simulated datasets
+│   ├── runs/active_learning/          # Logs and model checkpoints during active learning
+│   ├── server.py                      # Entry point for detection service
+│   └── pre.py                         # Data preprocessing script
 
-├── backend_model/                  # 后端：模型训练模块（基于YOLO/Ultralytics）
-│   ├── active_learning/            # 与detect共用的主动学习模块
-│   ├── docker/                     # Docker部署相关
-│   ├── docs/                       # 项目文档目录
-│   ├── examples/                   # 示例脚本与配置
-│   ├── runs/active_learning/       # 训练/推理输出结果
-│   ├── tests/                      # 单元测试模块
-│   ├── ultralytics/                # YOLO模型源码及定制模块
-│   ├── *.yaml                      # 数据集配置文件（BJ-PCB、GSD-PCB等）
-│   ├── detect.py                   # 推理脚本
-│   ├── train.py / val.py / test.py # 训练、验证、测试脚本
-│   ├── server.py                   # 训练服务入口
-│   └── image_labeler.py           # 图像标注逻辑（推测用于交互式标注）
+├── backend_model/                     # Backend: Model training module (based on YOLO/Ultralytics)
+│   ├── active_learning/               # Shared active learning module with backend_detect
+│   ├── docker/                        # Docker deployment configurations
+│   ├── docs/                          # Project documentation directory
+│   ├── examples/                      # Example scripts and configuration files
+│   ├── runs/active_learning/          # Training and inference output results
+│   ├── tests/                         # Unit testing module
+│   ├── ultralytics/                   # YOLO source code and customized components
+│   ├── *.yaml                         # Dataset configuration files (e.g., BJ-PCB, GSD-PCB)
+│   ├── detect.py                      # Inference script
+│   ├── train.py / val.py / test.py    # Training, validation, and testing scripts
+│   ├── server.py                      # Entry point for training service
+│   └── image_labeler.py               # Image labeling logic (for interactive annotation)
 
-├── frontend/                       # 前端：基于 Vue + TypeScript 的可视化界面
-│   ├── public/                     # 静态资源目录
-│   ├── src/                        # 前端源代码
-│   │   ├── assets/                # 图像资源等
-│   │   ├── components/           # 核心组件区块（如标注区域、结果展示）
+├── frontend/                          # Frontend: Visualization interface built with Vue + TypeScript
+│   ├── public/                        # Static assets directory
+│   ├── src/                           # Frontend source code
+│   │   ├── assets/                    # Image and media resources
+│   │   ├── components/                # Core UI components (e.g., annotation area, results table)
 │   │   │   ├── ControlPanel.vue
 │   │   │   ├── DetectionArea.vue
 │   │   │   ├── LabelArea.vue
 │   │   │   ├── ResultTable.vue
 │   │   │   └── TransfImg.vue
-│   │   ├── stores/               # 状态管理模块（Pinia）
+│   │   ├── stores/                    # State management modules (Pinia)
 │   │   │   ├── manageImg.ts
 │   │   │   └── manageModel.ts
-│   │   └── main.ts / App.vue     # 项目入口
-│   ├── package.json               # 前端依赖管理
-│   └── vite.config.ts             # 构建配置文件（Vite）
+│   │   └── main.ts / App.vue          # Project entry point
+│   ├── package.json                   # Frontend dependency management
+│   └── vite.config.ts                 # Build configuration (Vite)
 
-├── requirements.txt               # Python依赖列表（后端环境）
-├── README.md                      # 项目说明文档
+├── requirements.txt                   # Python dependency list (backend environment)
+├── README.md                          # Project documentation
 ```
 
-### 说明
+### Notes
 
-* `Dataset_Name/images/` 和 `Dataset_Name/labels/` 用于训练、验证、测试。
-* `raw/Dataset_Name/Annotations/` 为每类缺陷的原始标注文件（如 XML）。
-* `raw/Dataset_Name/labels/` 是转换后的 YOLO 格式标注文件，用于训练。
-* 建议在数据预处理阶段，将原始数据组织成 YOLO 所需的 `images/` 和 `labels/` 结构。
+* `Dataset_Name/images/` and `Dataset_Name/labels/` are used for **training, validation**, and **testing**.
+* `raw/Dataset_Name/Annotations/` contains the **original annotation files** (e.g., XML) for each defect category.
+* `raw/Dataset_Name/labels/` stores the **converted YOLO-format labels** used for training.
+* It is recommended to organize the raw data into the YOLO-required structure `images/` and `labels/` during the preprocessing stage.
 
-### 示例标注文件
+### Example Annotation File
 
-YOLO 格式标签（`.txt` 文件）：
+YOLO-format label file（`.txt`）：
 
 ```
 <class_id> <x_center> <y_center> <width> <height>
 ```
 
-数值均归一化到 0\~1。
+All values are **normalized to the range [0, 1]**.
 
-如需数据集划分和格式转换脚本，可参考本项目提供的 `pre.py` 或自行编写批处理脚本。
+For dataset splitting and format conversion, you may refer to the provided `pre.py` script or write your own batch processing tool.
 
 ---
 
-### 🧭 使用说明
+### 🧭 Usage Instructions
 
-本项目由两个后端模块与一个前端可视化界面组成。请按以下步骤运行项目：
+This project consists of **two backend modules** and **one frontend visualization interface**.
+Follow the steps below to set up and run the system:
 
-#### ✅ 安装依赖
+#### ✅ Install Dependencies
 
 ```bash
-# 安装后端依赖
+# Install backend dependencies
 pip install -r requirements.txt
 
-# 安装前端依赖
+# Install frontend dependencies
 cd frontend
 npm install
 ```
 
-#### 🚀 启动服务
+#### 🚀 Launch Services
 
 ```bash
-# 启动后端服务 1：检测服务
+# Start Backend Service 1: Detection Service
 cd backend_detect
 python server.py
 
-# 启动后端服务 2：模型服务
+# Start Backend Service 2: Model Service
 cd backend_model
 python server.py
 
-# 启动前端服务（基于 Vue + Vite）
+# Start Frontend Service (Vue + Vite)
 cd frontend
 npm run dev
 ```
 
-#### ⚙️ 配置服务地址（可选）
+#### ⚙️ Configure Service Endpoints (Optional)
 
-各模块间的服务通信地址通过 `.env` 文件进行配置：
+The communication addresses among different modules are configured through `.env` files:
 
 | 路径                    | 功能说明                                        |
 | --------------------- | ------------------------------------------- |
-| `backend_detect/.env` | 设置前端访问 backend\_detect 的 IP 和端口             |
-| `backend_model/.env`  | 设置 backend\_model 访问 backend\_detect 的地址    |
-| `frontend/.env`       | 设置前端访问 backend\_detect 和 backend\_model 的地址 |
+| `backend_detect/.env` | Defines the IP and port for frontend access to `backend\_detect`             |
+| `backend_model/.env`  | Defines the address for `backend\_model` to access `backend\_detect`    |
+| `frontend/.env`       | Defines the addresses for the frontend to access both backends |
 
-示例 `frontend/.env` 配置：
+Example configuration for `frontend/.env`：
 
 ```env
 VITE_DETECT_API_URL=http://localhost:8000
 VITE_MODEL_API_URL=http://localhost:8001
 ```
 
-请根据实际运行环境调整 IP 和端口，确保服务正常互通。
+Adjust the IP and port numbers according to your actual runtime environment to ensure smooth communication among services.
 
 ---
 
-## 注意事项
+## ⚠️ Notes
 
-* 如果你的显卡驱动版本不支持 CUDA 11.8，请访问 [PyTorch 官网](https://pytorch.org/get-started/locally/) 选择合适版本。
-* 本项目支持 Windows、Linux 系统，推荐使用 Conda 管理 Python 环境。
-* 安装过程中如遇依赖冲突或安装失败，建议先更新 Conda：
+* If your GPU driver does not support CUDA 11.8, please visit the official PyTorch website
+ to select a compatible version.
+* The project supports Windows and Linux systems; Conda is recommended for Python environment management.
+* If dependency conflicts or installation errors occur, try updating Conda first:
 
 ```bash
 conda update -n base -c defaults conda
 ```
+
 
