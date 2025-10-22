@@ -24,13 +24,21 @@ The system follows a *“Detection–Training–Annotation”* closed-loop desig
 2. **Training Backend** – Performs model retraining using uncertain or misclassified samples, employing the RAC2F feature-fusion module for improved micro-defect detection.
 3. **Annotation Interface** – Provides a user-friendly web interface for rapid human verification and feedback. Corrections are fed back for continuous model improvement.
 
-
 ## 🏭 Industrial Applications
 
 - **Mass Production QA** – Real-time, 24/7 defect detection matching SMT production speed.
 - **Adaptive Model Updating** – Self-adjusts for multi-batch production without manual reconfiguration.
 - **Low-Cost Deployment** – Runs on standard GPUs (RTX 3070Ti / 2080Ti), no hardware replacement required.
 - **Educational Value** – Enables teaching and research in AI + Industrial Inspection.
+
+<p align="center">
+  <img src="docs/constructure.png" width="800"/>
+  <br/>
+  <em>Figure: System deployment architecture of the distributed AI inspection solution.  
+  Multiple AOI machines connect to edge inference nodes powered by RTX 3070Ti GPUs,  
+  while a central server equipped with an RTX 2080Ti handles model training and data synchronization,  
+  forming a "distributed inference + centralized training" closed-loop system.</em>
+</p>
 
 ## 🧰 Tech Stack
 
@@ -175,6 +183,15 @@ cd frontend
 npm run dev
 ```
 
+<p align="center">
+  <img src="docs/frontend.png" width="800"/>
+  <br/>
+  <em>Figure: Frontend interface of the PCB defect detection system based on YOLOv11.  
+  The left panel allows model selection and confidence threshold adjustment;  
+  the middle panel visualizes real-time detection results;  
+  the right panel supports manual annotation and feedback for active learning.</em>
+</p>
+
 #### ⚙️ Configure Service Endpoints (Optional)
 
 The communication addresses among different modules are configured through `.env` files:
@@ -206,6 +223,7 @@ Adjust the IP and port numbers according to your actual runtime environment to e
 ```bash
 conda update -n base -c defaults conda
 ```
+
 
 
 
