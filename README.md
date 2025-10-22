@@ -5,6 +5,40 @@
 
 [📽️ Demo Video (MP4)](docs/demonstration.mp4)
 
+## 🧩 Introduction
+
+This project addresses the high false-alarm rate in traditional AOI (Automatic Optical Inspection) systems used in PCB manufacturing.  
+The proposed **AI-powered re-inspection system** integrates *active learning* and *improved YOLOv11* algorithms to intelligently verify suspected defects detected by AOI, significantly reducing manual workload and false alarms.
+
+**Key goals:**
+- Reduce AOI false alarm rate from ~28%, achieving a **miss rate below 0.07%** based on real PCB defect data from Huizhou Gaoshengda Technology Co., Ltd.
+- Maintain real-time inspection speed of **666 FPS**
+- Support **distributed inference + centralized training**
+- Enable **continuous self-improvement** through human-in-the-loop feedback
+
+## ⚙️ System Architecture
+
+The system follows a *“Detection–Training–Annotation”* closed-loop design:
+
+1. **Detection Frontend** – Receives AOI-captured images and performs real-time inference using a lightweight YOLOv11-based model.
+2. **Training Backend** – Performs model retraining using uncertain or misclassified samples, employing the RAC2F feature-fusion module for improved micro-defect detection.
+3. **Annotation Interface** – Provides a user-friendly web interface for rapid human verification and feedback. Corrections are fed back for continuous model improvement.
+
+
+## 🏭 Industrial Applications
+
+- **Mass Production QA** – Real-time, 24/7 defect detection matching SMT production speed.
+- **Adaptive Model Updating** – Self-adjusts for multi-batch production without manual reconfiguration.
+- **Low-Cost Deployment** – Runs on standard GPUs (RTX 3070Ti / 2080Ti), no hardware replacement required.
+- **Educational Value** – Enables teaching and research in AI + Industrial Inspection.
+
+## 🧰 Tech Stack
+
+- **Backend:** Python, PyTorch, YOLOv11, FastAPI  
+- **Frontend:** Vue 3 + Vite + TypeScript  
+- **Training:** Active Learning, RAC2F Feature Fusion, Distributed Training  
+- **Hardware:** RTX 3070Ti (Edge Inference), RTX 2080Ti (Central Training)
+
 ## Environment Setup
 
 This project is developed with **Python 3.10**. It is recommended to use **Conda** to create an isolated virtual environment.
@@ -172,5 +206,6 @@ Adjust the IP and port numbers according to your actual runtime environment to e
 ```bash
 conda update -n base -c defaults conda
 ```
+
 
 
