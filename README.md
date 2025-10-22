@@ -32,7 +32,7 @@ The system follows a *“Detection–Training–Annotation”* closed-loop desig
 - **Educational Value** – Enables teaching and research in AI + Industrial Inspection.
 
 <p align="center">
-  <img src="docs/constructure.png" width="800"/>
+  <img src="docs/architecture" width="800"/>
   <br/>
   <em>Figure: System deployment architecture of the distributed AI inspection solution.  
   Multiple AOI machines connect to edge inference nodes powered by RTX 3070Ti GPUs,  
@@ -223,6 +223,7 @@ Adjust the IP and port numbers according to your actual runtime environment to e
 ```bash
 conda update -n base -c defaults conda
 ```
+
 
 
 
