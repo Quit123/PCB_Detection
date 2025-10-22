@@ -1,5 +1,10 @@
 # PCB Detection
 
+> A hybrid active-learning based defect detection pipeline for industrial PCB AOI systems.  
+> 🥇 Winner of Shaoyin Cup 2025 Gold Award.
+
+[📽️ Demo Video (MP4)](docs/demonstration.mp4)
+
 ## 环境安装要求
 
 本项目基于 Python 3.10，推荐使用 Conda 创建隔离虚拟环境。
@@ -164,3 +169,4 @@ VITE_MODEL_API_URL=http://localhost:8001
 ```bash
 conda update -n base -c defaults conda
 ```
+
