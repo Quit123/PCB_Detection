@@ -1,6 +1,6 @@
 # PCB Detection
 
-> A hybrid active-learning based defect detection pipeline for industrial PCB AOI systems.  
+> A **hybrid active-learning based defect detection pipeline prototype** for industrial PCB AOI systems.  
 > 🥇 Winner of the **Shokz Global Excellence and Innovative Talent Summer School 2025 Gold Award**.
 
 [📽️ Demo Video (MP4)](docs/demonstration.mp4)
@@ -223,6 +223,7 @@ Adjust the IP and port numbers according to your actual runtime environment to e
 ```bash
 conda update -n base -c defaults conda
 ```
+
 
 
 
