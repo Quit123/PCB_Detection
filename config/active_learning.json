@@ -1,0 +1,14 @@
+{
+  "detection": {
+    "device": "0",
+    "imgsz": 640,
+    "predict_conf": 0.25,
+    "low_confidence_cutoff": 0.6,
+    "listen_interval_sec": 1.0,
+    "loop_sleep_sec": 0.05
+  },
+  "retrain": {
+    "min_labeled_images": 500,
+    "min_label_instances": 500
+  }
+}

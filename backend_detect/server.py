@@ -12,6 +12,8 @@ from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.websockets import WebSocket, WebSocketDisconnect
 
+from active_learning.label_stats import check_thresholds, count_yolo_pairs
+
 app = FastAPI()
 # BASE_DIR = os.path.dirname(__file__)  # server.py 所在目录
 # low_conf_dir = os.path.join(BASE_DIR, "active_learning", "low_conf_images")
@@ -178,6 +180,16 @@ def stop_detecting(req: StartDetectRequest):
 
 @app.post("/api/managing-data")
 def managing_data():
+    labels_dir = os.path.join(BASE_DIR, "active_learning", "low_conf_images", "labels")
+    raw_dir = os.path.join(BASE_DIR, "active_learning", "low_conf_images", "raw")
+    paired, inst = count_yolo_pairs(labels_dir, raw_dir)
+    ok, detail = check_thresholds(paired, inst)
+    if not ok:
+        return {
+            "status": "insufficient_labeled_data",
+            **detail,
+        }
+
     module_name = "backend_detect.active_learning.management_data_address"
     BASE_DIR_in = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     # 设置 PYTHONPATH 环境变量为项目根目录

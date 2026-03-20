@@ -12,6 +12,8 @@ from fastapi import FastAPI, UploadFile, File, Request
 import shutil
 import zipfile
 
+from active_learning.label_stats import check_thresholds, count_yolo_pairs
+
 app = FastAPI()
 # app.mount("/active_learning", StaticFiles(directory="low_conf_images"), name="low_conf_images")
 
@@ -117,6 +119,16 @@ class StartDetectRequest(BaseModel):
 
 @app.post("/api/managing-training")
 def managing_training():
+    labels_dir = os.path.join(BASE_DIR, "datasets", "raw", "next_train", "labels")
+    images_dir = os.path.join(BASE_DIR, "datasets", "raw", "next_train", "images")
+    paired, inst = count_yolo_pairs(labels_dir, images_dir)
+    ok, detail = check_thresholds(paired, inst)
+    if not ok:
+        return {
+            "status": "insufficient_labeled_data",
+            **detail,
+        }
+
     module_name = "backend_model.active_learning.management_train"
     BASE_DIR_in = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     # 设置 PYTHONPATH 环境变量为项目根目录

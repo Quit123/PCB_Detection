@@ -82,6 +82,9 @@ def move_labeled_data(low_conf_dir, next_train_dir, history_dir):
 
 # import os
 from dotenv import load_dotenv
+
+from .label_stats import check_thresholds, count_yolo_pairs
+
 load_dotenv()  # 默认从 .env 读取
 SERVER_IP = os.getenv("VITE_SERVER_IP", "127.0.0.1")
 SERVER_PORT = os.getenv("VITE_SERVER_PORT", "8000")
@@ -129,6 +132,14 @@ if __name__ == '__main__':
     low_conf_dir = os.path.join(BASE_DIR, "active_learning", "low_conf_images")
     next_train_dir = os.path.join(BASE_DIR, "datasets", "raw", "next_train")
     history_dir = os.path.join(BASE_DIR, "datasets", "history")
+
+    labels_dir = str(Path(low_conf_dir) / "labels")
+    raw_dir = str(Path(low_conf_dir) / "raw")
+    paired, inst = count_yolo_pairs(labels_dir, raw_dir)
+    ok, detail = check_thresholds(paired, inst)
+    if not ok:
+        print("❌ 未满足训练数据门槛，已中止:", detail.get("message"))
+        raise SystemExit(1)
 
     # low_conf_dir = BASE_DIR + './low_conf_images'
     # next_train_dir = '../datasets/raw/next_train'

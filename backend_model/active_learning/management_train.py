@@ -8,6 +8,8 @@ import requests
 import zipfile
 from dotenv import load_dotenv
 
+from .label_stats import check_thresholds, count_yolo_pairs
+
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 annotation_type = 'xml'
@@ -169,6 +171,13 @@ if __name__ == '__main__':
     # next_train_dir = '../datasets/raw/next_train'
     # history_dir = '../datasets/history'
     # move_labeled_data(low_conf_dir, next_train_dir, history_dir)
+    labels_dir = os.path.join(BASE_DIR, "datasets", "raw", "next_train", "labels")
+    images_dir = os.path.join(BASE_DIR, "datasets", "raw", "next_train", "images")
+    paired, inst = count_yolo_pairs(labels_dir, images_dir)
+    ok, detail = check_thresholds(paired, inst)
+    if not ok:
+        print("❌ 未满足训练数据门槛，已中止:", detail.get("message"))
+        raise SystemExit(1)
     print("数据移动与历史备份完成！")
     train()
     print("新数据完成训练！")

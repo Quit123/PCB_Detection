@@ -5,9 +5,25 @@ import cv2
 import argparse
 from ultralytics import YOLO
 
+from policy_config import get_detection_settings, policy_file_path
+
+
 def main(model_path):
     model = YOLO(model_path)
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    det = get_detection_settings()
+    device = str(det["device"])
+    imgsz = int(det["imgsz"])
+    predict_conf = float(det["predict_conf"])
+    low_cut = float(det["low_confidence_cutoff"])
+    listen_interval = float(det["listen_interval_sec"])
+    loop_sleep = float(det["loop_sleep_sec"])
+
+    print(f"检测策略来自: {policy_file_path()}")
+    print(
+        f"device={device} imgsz={imgsz} predict_conf={predict_conf} "
+        f"low_confidence_cutoff={low_cut}"
+    )
 
     source_dir = os.path.join(BASE_DIR, 'target')
     low_conf_raw_dir = os.path.join(BASE_DIR, 'low_conf_images', 'tmp')
@@ -21,14 +37,20 @@ def main(model_path):
         img_list = sorted(os.listdir(source_dir))
 
         if not img_list:
-            time.sleep(1)
+            time.sleep(listen_interval)
             continue
 
         for img_name in img_list:
             img_path = os.path.join(source_dir, img_name)
 
             start_time = time.time()
-            results = model.predict(source=img_path, device='0', imgsz=640, conf=0.25, verbose=False)
+            results = model.predict(
+                source=img_path,
+                device=device,
+                imgsz=imgsz,
+                conf=predict_conf,
+                verbose=False,
+            )
             duration = time.time() - start_time
             print(f"检测 {img_name} 耗时: {duration:.3f} 秒")
 
@@ -38,7 +60,7 @@ def main(model_path):
                 if result.boxes is not None and len(result.boxes) > 0:
                     confs = result.boxes.conf.cpu().numpy()
                     print(confs)
-                    if (confs < 0.6).any():
+                    if (confs < low_cut).any():
                         low_conf_flag = True
                 else:
                     pass_flag = True
@@ -60,7 +82,7 @@ def main(model_path):
                 # ***********************************
             os.remove(img_path)
 
-        time.sleep(0.05)
+        time.sleep(loop_sleep)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
